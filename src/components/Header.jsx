@@ -1,6 +1,17 @@
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { logout, selectIsAuthenticated } from "../features/auth/authSlice";
 
 export default function Header() {
+  const dispatch = useDispatch();
+  const isAuth = useSelector(selectIsAuthenticated);
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    dispatch(logout());
+    localStorage.removeItem("token");
+    navigate("/");
+  }
   return (
     <nav className="main-nav">
       <Link className="main-nav-logo" to="/">
@@ -12,10 +23,15 @@ export default function Header() {
         <h1 className="sr-only">Argent Bank</h1>
       </Link>
       <div>
-        <Link className="main-nav-item" to="/login">
-          <i className="fa fa-user-circle"></i>
-          Sign In
-        </Link>
+        {isAuth ? (
+          <button onClick={handleLogout} className="main-nav-item">
+            <i className="text-logout"></i> Logout
+          </button>
+        ) : (
+          <Link className="main-nav-item" to="/login">
+            <i className="fa fa-user-circle"></i> Sign In
+          </Link>
+        )}
       </div>
     </nav>
   );

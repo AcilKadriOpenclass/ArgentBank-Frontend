@@ -52,8 +52,15 @@ body {
 }
 
 .main-nav-item {
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
   text-decoration: none;
-  margin-right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .main-nav-item:hover {

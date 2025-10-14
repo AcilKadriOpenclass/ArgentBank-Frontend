@@ -1,13 +1,16 @@
-const URL_BASE = "http://localhost:3001/api-docs/#/User Module/";
+const BASE_URL = "http://localhost:3001/api/v1";
+
 export async function login({ email, password }) {
-  const response = await fetch(`${BASE_URL}/post_user_login`, {
+  const response = await fetch(`${BASE_URL}/user/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
-  const data = await.response.json();
+  const data = await response.json();
 
-  if(!response.ok) {
-    const msg = data?.message
+  if (!response.ok) {
+    const msg = data?.message || "Identifiants invalides";
+    throw new Error(msg);
   }
+  return { token: data.body.token };
 }
