@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { login } from "../../features/auth/authSlice";
+import { login, fetchMe } from "../../features/auth/authSlice";
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -11,15 +11,16 @@ export default function Login() {
     event.preventDefault();
     const email = event.target.elements.email.value;
     const password = event.target.elements.password.value;
-    const stayConnected = event.target.elements.stayConnected.checked;
+    const remember = event.target.elements.remember.checked;
 
     try {
       const token = await dispatch(login({ email, password })).unwrap();
-      if (stayConnected) {
+      if (remember) {
         localStorage.setItem("token", token);
       } else {
         localStorage.removeItem("token");
       }
+      await dispatch(fetchMe()).unwrap();
       navigate("/profile");
     } catch (err) {}
   }
@@ -39,7 +40,7 @@ export default function Login() {
             <input type="password" id="password" name="password" />
           </div>
           <div className="input-remember">
-            <input type="checkbox" id="remember-me" name="stayConnected" />
+            <input type="checkbox" id="remember-me" name="remember" />
             <label htmlFor="remember-me">Remember me</label>
           </div>
           <button type="submit" className="sign-in-button">

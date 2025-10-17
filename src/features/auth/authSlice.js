@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { login as apiLogin } from "../../api/client";
+import { getProfile } from "../../api/client";
 
 const initialState = {
   user: null,
@@ -39,8 +40,29 @@ const authSlice = createSlice({
       state.accessToken = null;
       state.error = action.payload || action.error?.message;
     });
+    builder.addCase(fetchMe.fulfilled, (state, action) => {
+      state.user = action.payload;
+      state.error = null;
+    });
+    builder.addCase(fetchMe.rejected, (state, action) => {
+      state.error = action.payload || action.error?.message;
+    });
   },
 });
+
+export const fetchMe = createAsyncThunk(
+  "auth/fetchMe",
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().auth.accessToken;
+      if (!token) return rejectWithValue("Pas de token");
+      const user = await getProfile(token);
+      return user;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
 
 export const selectAuth = (state) => state.auth;
 export const selectUser = (state) => state.auth.user;

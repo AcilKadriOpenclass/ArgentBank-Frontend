@@ -14,3 +14,20 @@ export async function login({ email, password }) {
   }
   return { token: data.body.token };
 }
+
+export async function getProfile(token) {
+  const response = await fetch(`${BASE_URL}/user/profile`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await response.json();
+
+  if (!response.ok) {
+    const msg = data?.message || "Session invalide";
+    throw new Error(msg);
+  }
+  return data.body;
+}

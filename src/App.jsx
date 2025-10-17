@@ -6,8 +6,24 @@ import Login from "./pages/Login/Login";
 import Profile from "./pages/Interface/Profile";
 import NotFound from "./pages/NotFound/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import {
+  fetchMe,
+  selectIsAuthenticated,
+  selectUser,
+} from "./features/auth/authSlice";
 
 function App() {
+  const dispatch = useDispatch();
+  const isAuth = useSelector(selectIsAuthenticated);
+  const user = useSelector(selectUser);
+
+  useEffect(() => {
+    if (isAuth && !user) {
+      dispatch(fetchMe());
+    }
+  }, [isAuth, user, dispatch]);
   return (
     <>
       <Header />

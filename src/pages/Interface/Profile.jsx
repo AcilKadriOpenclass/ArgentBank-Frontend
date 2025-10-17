@@ -1,11 +1,15 @@
+import { useSelector } from "react-redux";
+import { selectUser } from "../../features/auth/authSlice";
+
 export default function Profile() {
+  const user = useSelector(selectUser);
   return (
     <main className="main bg-dark">
       <div className="header">
         <h1>
           Welcome back
           <br />
-          Tony Jarvis!
+          {user?.firstName} {user?.lastName}
         </h1>
         <button className="edit-button">Edit Name</button>
       </div>
