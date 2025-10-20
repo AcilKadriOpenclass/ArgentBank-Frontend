@@ -30,3 +30,21 @@ export async function getProfile(token) {
   }
   return data.body;
 }
+
+export async function updateUserName(token, userName) {
+  const response = await fetch(`${BASE_URL}/user/profile`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ userName }),
+  });
+  const data = await response.json();
+
+  if (!response.ok) {
+    const msg = data?.message || `${response.status} ${response.statusText}`;
+    throw new Error(msg);
+  }
+  return data.body;
+}
