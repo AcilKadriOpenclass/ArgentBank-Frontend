@@ -1,11 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { logout, selectIsAuthenticated } from "../features/auth/authSlice";
+import {
+  logout,
+  selectIsAuthenticated,
+  selectUser,
+} from "../features/auth/authSlice";
 
 export default function Header() {
   const dispatch = useDispatch();
   const isAuth = useSelector(selectIsAuthenticated);
   const navigate = useNavigate();
+  const user = useSelector(selectUser);
 
   function handleLogout() {
     dispatch(logout());
@@ -22,14 +27,19 @@ export default function Header() {
         />
         <h1 className="sr-only">Argent Bank</h1>
       </Link>
-      <div>
+      <div className="justify-content">
         {isAuth ? (
-          <button onClick={handleLogout} className="main-nav-item">
-            <i className="text-logout"></i> Logout
-          </button>
+          <>
+            <Link className="main-nav-item" to="/profile">
+              <i className="fa fa-user-circle"></i> {user?.userName}
+            </Link>
+            <button onClick={handleLogout} className="main-nav-item">
+              <i className="text-logout"></i> Logout
+            </button>
+          </>
         ) : (
           <Link className="main-nav-item" to="/login">
-            <i className="fa fa-user-circle"></i> Sign In
+            Sign In
           </Link>
         )}
       </div>
