@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { login as apiLogin } from "../../api/client";
+import { updateUserName as apiUpdateUserName } from "../../api/client";
 import { getProfile } from "../../api/client";
 
 const initialState = {
@@ -17,6 +18,26 @@ export const login = createAsyncThunk(
       return token;
     } catch (err) {
       return rejectWithValue(err.message);
+    }
+  }
+);
+
+export const updateUserName = createAsyncThunk(
+  "auth/updateUsername",
+  async (newUserNmae, { getState, rejectWithValue }) => {
+    try {
+      const state = getState();
+      const token = state?.auth?.accessToken;
+      if (!token) return rejectWithValue("No access token");
+
+      const value = String(newUserNmae).trim();
+      if (!value) return rejectWithValue("Username cannot be empty");
+
+      const updateUser = await apiUpdateUserName(token, value);
+
+      return updateUser;
+    } catch (e) {
+      return rejectWithValue(e.message || "Update usernamem failed");
     }
   }
 );
@@ -46,6 +67,16 @@ const authSlice = createSlice({
     });
     builder.addCase(fetchMe.rejected, (state, action) => {
       state.error = action.payload || action.error?.message;
+    });
+    builder.addCase(updateUserName.pending, (state) => {
+      state.error = null;
+    });
+    builder.addCase(updateUserName.fulfilled, (state, action) => {
+      state.user = { ...state.user, ...action.payload };
+    });
+    builder.addCase(updateUserName.rejected, (state, action) => {
+      state.error =
+        action.payload || action.error?.message || "Update username failed";
     });
   },
 });
