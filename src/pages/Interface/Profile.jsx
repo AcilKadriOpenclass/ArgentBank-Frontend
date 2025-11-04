@@ -36,7 +36,7 @@ export default function Profile() {
           Edit Name
         </button>
         {isEditing && (
-          <form className="profile-form" onSubmit={handleSubmit}>
+          <form className="input-wrapper" onSubmit={handleSubmit}>
             <div>
               <label>FirstName</label>
               <input value={user?.firstName || ""} readOnly disabled />
@@ -55,6 +55,7 @@ export default function Profile() {
             </div>
             <div className="actions">
               <button
+                className="edit-button"
                 type="submit"
                 disabled={
                   userName.trim() === "" || userName.trim() === user?.userName
@@ -64,6 +65,7 @@ export default function Profile() {
               </button>
 
               <button
+                className="edit-button-red"
                 type="button"
                 onClick={() => {
                   setIsEditing(false);
